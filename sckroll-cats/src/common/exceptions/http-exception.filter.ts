@@ -17,12 +17,20 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     // Express의 사용법과 비슷
     // res.status(400).send({ ... });
-    response.status(status).json({
-      success: false,
-      // statusCode: status,
-      timestamp: new Date().toISOString(),
-      path: request.url,
-      error,
-    });
+    if (typeof error === 'string') {
+      response.status(status).json({
+        success: false,
+        timestamp: new Date().toISOString(),
+        path: request.url,
+        error,
+      });
+    } else {
+      response.status(status).json({
+        success: false,
+        timestamp: new Date().toISOString(),
+        path: request.url,
+        ...error,
+      });
+    }
   }
 }
