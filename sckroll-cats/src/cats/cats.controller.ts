@@ -4,6 +4,7 @@ import {
   Get,
   Post,
   Req,
+  UploadedFiles,
   UseFilters,
   UseGuards,
   UseInterceptors,
@@ -20,6 +21,7 @@ import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
 import { Request } from 'express';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { Cat } from './cats.schema';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('cats')
 @UseInterceptors(SuccessInterceptor)
@@ -69,9 +71,13 @@ export class CatsController {
   //   return 'logout';
   // }
 
+  // 프론트엔드 form에서 image라는 키에 파일을 담았을 때 업로드 수행
+  // FileInterceptor의 두 번째 인자로 옵션 객체를 넘겨줄 수 있음
   @ApiOperation({ summary: '고양이 이미지 업로드' })
-  @Post('upload/cats')
-  uploadCatImg() {
+  @UseInterceptors(FileInterceptor('image'))
+  @Post('upload')
+  uploadCatImg(@UploadedFiles() files: Array<Express.Multer.File>) {
+    console.log(files);
     return 'uploadImg';
   }
 }
